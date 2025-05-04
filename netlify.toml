@@ -1,0 +1,74 @@
+// netlify.toml
+[build]
+  command = "npm run build"
+  publish = "build"
+  functions = "functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[dev]
+  functions = "functions"
+  port = 8888
+  targetPort = 3000
+
+// functions/generate-course.js (for serverless deployment)
+const { Client } = require('@anthropic-ai/sdk');
+
+exports.handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'Method not allowed' }),
+    };
+  }
+
+  const { topic, audience, sessionLength, deliveryFormat } = JSON.parse(event.body);
+  
+  try {
+    const anthropic = new Client({
+      apiKey: process.env.CLAUDE_API_KEY,
+    });
+
+    const prompt = `Create a comprehensive, professional course curriculum on "${topic}" with the following specifications:
+    - Target Audience: ${audience}
+    - Session Length: ${sessionLength} minutes
+    - Delivery Format: ${deliveryFormat}
+    
+    Please structure the course with:
+    1. A compelling course title
+    2. Learning objectives
+    3. 3-5 detailed modules with content and activities
+    4. Assessment methods
+    5. Required materials/resources
+    
+    Format the response as a structured JSON object with clear sections.`;
+
+    const response = await anthropic.messages.create({
+      model: 'claude-3-7-sonnet-20250219',
+      max_tokens: 4000,
+      messages: [{ role: 'user', content: prompt }]
+    });
+
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      body: JSON.stringify(response),
+    };
+  } catch (error) {
+    console.error('Error generating course:', error);
+    return {
+      statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      body: JSON.stringify({ error: 'Failed to generate course' }),
+    };
+  }
+};
