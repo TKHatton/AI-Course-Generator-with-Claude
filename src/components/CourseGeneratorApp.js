@@ -1,6 +1,6 @@
 // src/components/CourseGeneratorApp.js
 import React, { useState } from 'react';
-import { FaBook, FaDownload, FaHistory, FaSparkles, FaUsers, FaClock, FaProjectDiagram } from 'react-icons/fa';
+import { FaBook, FaDownload, FaHistory, FaMagic, FaUsers, FaClock, FaProjectDiagram } from 'react-icons/fa';
 import { generatePDF, generateDOCX, generateSlides } from '../utils/documentGenerators';
 
 export default function CourseGeneratorApp() {
@@ -107,7 +107,7 @@ export default function CourseGeneratorApp() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-5xl font-bold mb-2 flex items-center gap-3">
-                <FaSparkles className="text-accent-500" />
+                <FaMagic className="text-accent-500" />
                 AI Course Generator
               </h1>
               <p className="text-xl text-primary-200">Transform any topic into professional training materials instantly</p>
@@ -215,7 +215,7 @@ export default function CourseGeneratorApp() {
                   {loading ? (
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white" />
                   ) : (
-                    <FaSparkles />
+                    <FaMagic />
                   )}
                   {loading ? 'Generating Course...' : 'Generate Course'}
                 </button>

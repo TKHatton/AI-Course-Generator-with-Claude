@@ -424,3 +424,95 @@ export function generateSlides(courseData) {
   
   pptx.writeFile({ fileName: `${courseData.topic}-course-slides.pptx` });
 }
+
+// documentGenerators.js
+
+export const generateQuiz = (content) => {
+  // Generate quiz content
+  const questions = [];
+  
+  // Extract potential quiz questions from content
+  const sections = content.split(/\n\n+/);
+  
+  sections.forEach((section, index) => {
+    if (section.includes('?')) {
+      // Simple approach - look for sentences ending with question marks
+      const sentences = section.split('.').filter(s => s.trim().length > 0);
+      sentences.forEach(sentence => {
+        if (sentence.includes('?')) {
+          questions.push({
+            id: questions.length + 1,
+            question: sentence.trim(),
+            options: [
+              'Option 1',
+              'Option 2', 
+              'Option 3',
+              'Option 4'
+            ],
+            correctAnswer: 0
+          });
+        }
+      });
+    }
+  });
+
+  return {
+    title: 'Course Quiz',
+    questions: questions.slice(0, 5), // Limit to 5 questions
+    totalPoints: 100,
+    passingScore: 70
+  };
+};
+
+export const generateWorksheet = (content) => {
+  // Generate worksheet content
+  const sections = content.split(/\n\n+/);
+  const exercises = [];
+  
+  sections.forEach((section, index) => {
+    exercises.push({
+      id: index + 1,
+      title: `Exercise ${index + 1}`,
+      instruction: 'Complete the following based on the course content:',
+      prompt: section.substring(0, 200) + '...',
+      space: '____________\n\n\n\n'
+    });
+  });
+
+  return {
+    title: 'Course Worksheet',
+    exercises: exercises.slice(0, 3), // Limit to 3 exercises
+    totalPoints: 100
+  };
+};
+
+export const generateFlashcards = (content) => {
+  // Generate flashcard content
+  const cards = [];
+  const sections = content.split(/\n\n+/);
+  
+  sections.forEach((section, index) => {
+    const lines = section.split('\n');
+    if (lines.length >= 2) {
+      cards.push({
+        id: index + 1,
+        front: lines[0],
+        back: lines.slice(1).join('\n')
+      });
+    }
+  });
+
+  return {
+    title: 'Course Flashcards',
+    cards: cards.slice(0, 10) // Limit to 10 cards
+  };
+};
+
+export default {
+  generatePDF,
+  generateDOCX,
+  generateSlides,
+  generateQuiz,
+  generateWorksheet,
+  generateFlashcards
+};
