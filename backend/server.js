@@ -16,20 +16,24 @@ const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
 // Function to generate content using Claude API
 async function generateContent(prompt) {
   try {
-    const response = await axios.post('https://api.anthropic.com/v1/complete', {
-      prompt: `Human: ${prompt}\n\nAssistant:`,
-      model: 'claude-2',
-      max_tokens_to_sample: 2000,
-      stop_sequences: ['\n\nHuman:']
+    const response = await axios.post('https://api.anthropic.com/v1/messages', {
+      model: 'claude-3-sonnet-20240229',
+      max_tokens: 2000,
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ]
     }, {
       headers: {
         'Content-Type': 'application/json',
         'X-API-Key': CLAUDE_API_KEY,
-        'anthropic-version': '2023-01-01'
+        'anthropic-version': '2023-06-01'
       }
     });
 
-    return response.data.completion;
+    return response.data.content[0].text;
   } catch (error) {
     console.error('Error calling Claude API:', error);
     throw error;
