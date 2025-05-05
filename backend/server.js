@@ -36,6 +36,16 @@ async function generateContent(prompt) {
   }
 }
 
+// Add this root route handler
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'AI Course Generator API is running',
+    endpoints: {
+      'POST /api/generate-program': 'Generate complete educational program'
+    }
+  });
+});
+
 // API endpoint for generating complete educational program
 app.post('/api/generate-program', async (req, res) => {
   try {
