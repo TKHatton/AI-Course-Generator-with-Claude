@@ -424,3 +424,12 @@ export default function CourseGeneratorApp() {
     </div>
   );
 }
+
+// In your CourseGenerator component, update the catch block:
+.catch(error => {
+  console.error('Error status:', error.response?.status);
+  console.error('Error data:', error.response?.data);
+  console.error('Error message:', error.response?.data?.error?.message);
+  setIsGenerating(false);
+  alert(`Error generating program: ${error.response?.data?.message || 'Unknown error'}`);
+});

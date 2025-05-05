@@ -17,18 +17,15 @@ const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
 async function generateContent(prompt) {
   try {
     const response = await axios.post('https://api.anthropic.com/v1/messages', {
-      model: 'claude-3-sonnet-20240229',
+      model: 'claude-3-5-sonnet-20241022'  // This is the most recent version
       max_tokens: 2000,
       messages: [
-        {
-          role: 'user',
-          content: prompt
-        }
+        { role: 'user', content: prompt }
       ]
     }, {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': CLAUDE_API_KEY,
+        'x-api-key': CLAUDE_API_KEY,
         'anthropic-version': '2023-06-01'
       }
     });
